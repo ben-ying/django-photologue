@@ -29,55 +29,39 @@ In the folder of skin CSS file there are also:
 
 {% if object_list %}
 {% for gallery in object_list %}
-    {% if gallery.description %}
-    <h2>{{ gallery.description}}</h2>
-    {% endif %}
-    <div class="my-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+{% if gallery.description %}
+<h2>{{ gallery.description}}</h2>
+{% endif %}
+{% if gallery.sample|length > 0 %}
+<div class="my-gallery" itemscope itemtype="http://schema.org/ImageGallery">
     {% for photo in gallery.sample %}
-    <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-        {% if photo.title %}
-        <figcaption itemprop="caption description">{{ photo.title }}</figcaption>
-        {% endif %}
-        <a href="{{ photo.image.url }}" itemprop="contentUrl" data-size="1024x1024">
-            <img src="{{ photo.get_thumbnail_url }}" class="thumbnail" itemprop="thumbnail" alt="Image description" />
-        </a>
-    </figure>
-    {% endfor %}
-    </div>
+    {% if forloop.counter == gallery.sample|length %}
+    <figure class="horizontal_float_none" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+        {% else %}
+        <figure class="horizontal_float_left" itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
+            {% endif %}
+            {% if photo.title %}
+            <figcaption itemprop="caption description">{{ photo.title }}</figcaption>
+            {% endif %}
+            <a href="{{ photo.image.url }}" itemprop="contentUrl" data-size="1024x1024">
+                <img src="{{ photo.get_thumbnail_url }}" class="thumbnail" itemprop="thumbnail" alt="Image description" />
+            </a>
+            </br>
+            </br>
+        </figure>
+        {% endfor %}
+</div>
+{% else %}
+<div class="row col-lg-12">{% trans "No images in this gallery." %}</div>
+{% endif %}
 {% endfor %}
 {% else %}
-<div class="row col-lg-12">{% trans "No galleries were found" %}.</div>
+<div class="row col-lg-12">{% trans "No galleries were found." %}</div>
 {% endif %}
 
 {% include "photologue/includes/paginator.html" %}
 </div>
 
-<h2>Second gallery:</h2>
-
-<div class="my-gallery" itemscope itemtype="http://schema.org/ImageGallery">
-    <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-        <a href="https://farm2.staticflickr.com/1043/5186867718_06b2e9e551_b.jpg" itemprop="contentUrl" data-size="964x1024">
-            <img src="https://farm2.staticflickr.com/1043/5186867718_06b2e9e551_m.jpg" itemprop="thumbnail" alt="Image description" />
-        </a>
-        <figcaption itemprop="caption description">Image caption 2.1</figcaption>
-    </figure>
-
-    <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-        <a href="https://farm7.staticflickr.com/6175/6176698785_7dee72237e_b.jpg" itemprop="contentUrl" data-size="1024x683">
-            <img src="https://farm7.staticflickr.com/6175/6176698785_7dee72237e_m.jpg" itemprop="thumbnail" alt="Image description" />
-        </a>
-        <figcaption itemprop="caption description">Image caption 2.2</figcaption>
-    </figure>
-
-    <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-        <a href="https://farm6.staticflickr.com/5023/5578283926_822e5e5791_b.jpg" itemprop="contentUrl" data-size="1024x768">
-            <img src="https://farm6.staticflickr.com/5023/5578283926_822e5e5791_m.jpg" itemprop="thumbnail" alt="Image description" />
-        </a>
-        <figcaption itemprop="caption description">Image caption 2.3</figcaption>
-    </figure>
-
-
-</div>
 <!-- Root element of PhotoSwipe. Must have class pswp. -->
 <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
 

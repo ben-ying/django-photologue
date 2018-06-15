@@ -177,3 +177,13 @@
 .pswp__error-msg a {
   color: #CCC;
   text-decoration: underline; }
+
+.horizontal_float_left {
+  float: left;
+  padding-right: 5px;
+}
+
+.horizontal_float_none {
+  float: none;
+  padding-right: 5px;
+}
