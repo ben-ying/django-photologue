@@ -22,48 +22,39 @@ In the folder of skin CSS file there are also:
 {% endblock %}
 
 {% block content %}
-<h2>First gallery:</h2>
+<div class="row col-lg-12">
+    <h1 class="page-header">{% trans "All galleries" %}</h1>
+</div>
 
-<div class="my-gallery" itemscope itemtype="http://schema.org/ImageGallery">
 
+{% if object_list %}
+{% for gallery in object_list %}
+    {% if gallery.description %}
+    <h2>{{ gallery.description}}</h2>
+    {% endif %}
+    <div class="my-gallery" itemscope itemtype="http://schema.org/ImageGallery">
+    {% for photo in gallery.sample %}
     <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-        <a href="https://farm3.staticflickr.com/2567/5697107145_a4c2eaa0cd_o.jpg" itemprop="contentUrl" data-size="1024x1024">
-            <img src="https://farm3.staticflickr.com/2567/5697107145_3c27ff3cd1_m.jpg" itemprop="thumbnail" alt="Image description" />
+        {% if photo.title %}
+        <figcaption itemprop="caption description">{{ photo.title }}</figcaption>
+        {% endif %}
+        <a href="{{ photo.image.url }}" itemprop="contentUrl" data-size="1024x1024">
+            <img src="{{ photo.get_thumbnail_url }}" class="thumbnail" itemprop="thumbnail" alt="Image description" />
         </a>
-        <figcaption itemprop="caption description">Image caption  1</figcaption>
-
     </figure>
+    {% endfor %}
+    </div>
+{% endfor %}
+{% else %}
+<div class="row col-lg-12">{% trans "No galleries were found" %}.</div>
+{% endif %}
 
-    <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-        <a href="https://farm2.staticflickr.com/1043/5186867718_06b2e9e551_b.jpg" itemprop="contentUrl" data-size="964x1024">
-            <img src="https://farm2.staticflickr.com/1043/5186867718_06b2e9e551_m.jpg" itemprop="thumbnail" alt="Image description" />
-        </a>
-        <figcaption itemprop="caption description">Image caption 2</figcaption>
-    </figure>
-
-    <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-        <a href="https://farm7.staticflickr.com/6175/6176698785_7dee72237e_b.jpg" itemprop="contentUrl" data-size="1024x683">
-            <img src="https://farm7.staticflickr.com/6175/6176698785_7dee72237e_m.jpg" itemprop="thumbnail" alt="Image description" />
-        </a>
-        <figcaption itemprop="caption description">Image caption 3</figcaption>
-    </figure>
-
-    <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-        <a href="https://farm6.staticflickr.com/5023/5578283926_822e5e5791_b.jpg" itemprop="contentUrl" data-size="1024x768">
-            <img src="https://farm6.staticflickr.com/5023/5578283926_822e5e5791_m.jpg" itemprop="thumbnail" alt="Image description" />
-        </a>
-        <figcaption itemprop="caption description">Image caption 4</figcaption>
-    </figure>
-
-
+{% include "photologue/includes/paginator.html" %}
 </div>
 
 <h2>Second gallery:</h2>
 
 <div class="my-gallery" itemscope itemtype="http://schema.org/ImageGallery">
-
-
-
     <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
         <a href="https://farm2.staticflickr.com/1043/5186867718_06b2e9e551_b.jpg" itemprop="contentUrl" data-size="964x1024">
             <img src="https://farm2.staticflickr.com/1043/5186867718_06b2e9e551_m.jpg" itemprop="thumbnail" alt="Image description" />
@@ -116,7 +107,7 @@ In the folder of skin CSS file there are also:
 
                     <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
 
-                    <button class="pswp__button pswp__button--share" title="Share"></button>
+                    <!-- <button class="pswp__button pswp__button--share" title="Share"></button> -->
 
                     <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
 
@@ -177,7 +168,11 @@ var initPhotoSwipeFromDOM = function(gallerySelector) {
                 continue;
             }
 
-            linkEl = figureEl.children[0]; // <a> element
+            if(figureEl.children.length > 1) {
+                linkEl = figureEl.children[1]; // <a> element
+            } else {
+                linkEl = figureEl.children[0]; // <a> element
+            }
 
             size = linkEl.getAttribute('data-size').split('x');
 
@@ -192,7 +187,7 @@ var initPhotoSwipeFromDOM = function(gallerySelector) {
 
             if(figureEl.children.length > 1) {
                 // <figcaption> content
-                item.title = figureEl.children[1].innerHTML; 
+                item.title = figureEl.children[0].innerHTML; 
             }
 
             if(linkEl.children.length > 0) {
